@@ -17,9 +17,8 @@ class Admin
     /**
      * Initialize the class and set its properties.
      *
-     * @param      string    $pluginName       The name of this plugin.
      */
-    public function __construct(private string $pluginName)
+    public function __construct()
     {
     }
 

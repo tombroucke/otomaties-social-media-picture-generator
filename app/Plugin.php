@@ -80,7 +80,7 @@ class Plugin
      */
     private function defineAdminHooks() : void
     {
-        $admin = new Admin($this->getPluginName());
+        $admin = new Admin();
         $this->loader->addAction('admin_post_generate-social-media-pictures', $admin, 'generateSocialMediaPictures');
     }
 
