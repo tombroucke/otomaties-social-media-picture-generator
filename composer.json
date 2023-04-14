@@ -1,6 +1,6 @@
 {
-    "name": "tombroucke/plugin-boilerplate",
-    "description" : "Boilerplate for WordPress plugins",
+    "name": "tombroucke/otomaties-social-media-picture-generator",
+    "description" : "Allow visitors to generate a social media picture with a custom overlay",
     "license": "GNU GPLv3",
     "autoload": {
         "psr-4": {
