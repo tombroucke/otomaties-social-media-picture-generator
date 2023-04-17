@@ -2,6 +2,7 @@
     "name": "tombroucke/otomaties-social-media-picture-generator",
     "description" : "Allow visitors to generate a social media picture with a custom overlay",
     "license": "GPL-3.0",
+    "type": "wordpress-plugin",
     "autoload": {
         "psr-4": {
             "Otomaties\\SocialMediaPictureGenerator\\": "app/"
