@@ -55,6 +55,10 @@ class OptionsPage
                     'instructions' => __('Name of the image size', 'otomaties-smp'),
                     'required' => true,
                 ])
+                ->addTextarea('description', [
+                    'label' => __('Description', 'otomaties-smp'),
+                    'instructions' => __('Description of the image size', 'otomaties-smp'),
+                ])
                 ->addImage('overlay', [
                     'label' => __('Overlay', 'otomaties-smp'),
                     'instructions' => __('Overlay image', 'otomaties-smp'),

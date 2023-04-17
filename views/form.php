@@ -11,6 +11,9 @@
             >
                 <?php echo $size['name']; ?>
             </label>
+            <?php if (isset($size['description']) && $size['description'] !== '') : ?>
+                <p><?php echo $size['description']; ?></p>
+            <?php endif; ?>
             <input 
                 class="<?php echo apply_filters('otomaties_smp_file_input_class', 'form-control'); ?>" 
                 type="file" 
