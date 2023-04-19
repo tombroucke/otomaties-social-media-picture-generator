@@ -82,7 +82,6 @@ class Plugin
     {
         $admin = new Admin();
         $this->loader->addAction('admin_post_generate-social-media-pictures', $admin, 'generateSocialMediaPictures');
-        $this->loader->addAction('admin_post_nopriv_generate-social-media-pictures', $admin, 'generateSocialMediaPictures');
     }
 
     /**
@@ -93,8 +92,7 @@ class Plugin
     private function defineFrontendHooks() : void
     {
         $frontend = new Frontend($this->getPluginName());
-        // $this->loader->addAction('wp_enqueue_scripts', $frontend, 'enqueueStyles');
-        // $this->loader->addAction('wp_enqueue_scripts', $frontend, 'enqueueScripts');
+        $this->loader->addFilter('the_content', $frontend, 'showNotices');
     }
 
     /**

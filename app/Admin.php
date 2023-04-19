@@ -2,6 +2,8 @@
 
 namespace Otomaties\SocialMediaPictureGenerator;
 
+use function Patchwork\Config\read;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -30,14 +32,14 @@ class Admin
         $contentDir = wp_upload_dir()['basedir']. '/otomaties-smp/' . $uniqueId . '/';
 
         if (!wp_verify_nonce($nonce, 'generate_social_media_picture')) {
-            $referer = add_query_arg('error', 'nonce', $referer);
+            $referer = add_query_arg('smp_error', 'nonce', $referer);
             wp_safe_redirect($referer);
             exit;
         }
 
         $uploadedFiles = $this->filterOutImages($_FILES['image_size']);
         if (empty($uploadedFiles)) {
-            $referer = add_query_arg('error', 'no_image', $referer);
+            $referer = add_query_arg('smp_error', 'no_image', $referer);
             wp_safe_redirect($referer);
             exit;
         }
@@ -47,7 +49,7 @@ class Admin
             $imageInfo = getimagesize($file['tmp_name']);
 
             if (!$imageInfo) {
-                $referer = add_query_arg('error', 'invalid_image', $referer);
+                $referer = add_query_arg('smp_error', 'invalid_image', $referer);
                 wp_safe_redirect($referer);
                 exit;
             }
@@ -56,7 +58,7 @@ class Admin
             $watermarkPath = wp_get_original_image_path($imagesize['overlay']['ID']);
 
             if ($watermarkPath === false) {
-                $referer = add_query_arg('error', 'invalid_watermark', $referer);
+                $referer = add_query_arg('smp_error', 'invalid_watermark', $referer);
                 wp_safe_redirect($referer);
                 exit;
             }
@@ -65,7 +67,7 @@ class Admin
             $watermarkInfo = getimagesize($watermarkPath);
 
             if ($watermark === false || $watermarkInfo === false) {
-                $referer = add_query_arg('error', 'invalid_watermark', $referer);
+                $referer = add_query_arg('smp_error', 'invalid_watermark', $referer);
                 wp_safe_redirect($referer);
                 exit;
             }
@@ -87,7 +89,7 @@ class Admin
             }
 
             if ($image === false) {
-                $referer = add_query_arg('error', 'invalid_image', $referer);
+                $referer = add_query_arg('smp_error', 'invalid_generated_image', $referer);
                 wp_safe_redirect($referer);
                 exit;
             }
@@ -166,7 +168,6 @@ class Admin
             imagesavealpha($newImage, true);
             imagecopy($newImage, $watermark, 0, 0, 0, 0, $frameWidth, $frameHeight);
             $mergedFilename = $contentDir . $sizeName . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-            ;
 
             if (!file_exists($contentDir)) {
                 mkdir($contentDir, 0755, true);
@@ -197,23 +198,51 @@ class Admin
 
             $files[] = $mergedFilename;
         }
-        $zipFileName = $this->zipEm($files);
-        if (!$zipFileName) {
-            $referer = add_query_arg('error', 'zip', $referer);
-            wp_safe_redirect($referer);
-            exit;
+
+        switch (count($files)) {
+            case 0:
+                $referer = add_query_arg('smp_error', 'no_files', $referer);
+                wp_safe_redirect($referer);
+                exit;
+            case 1:
+                $file = $files[0];
+                $fileInfo = pathinfo($file);
+                $fileExtension = $fileInfo['extension'];
+                $fileSize = filesize($file);
+                $fileType = mime_content_type($file);
+                $fileName = $fileInfo['filename'] . '.' . $fileExtension;
+
+                header('Content-Description: File Transfer');
+                header('Content-Type: ' . $fileType);
+                header('Content-Disposition: attachment; filename=' . $fileName);
+                header('Content-Transfer-Encoding: binary');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . $fileSize);
+                readfile($file);
+                exit;
+            default:
+                $zipFileName = $this->zipEm($files);
+                if (!$zipFileName) {
+                    $referer = add_query_arg('smp_error', 'zip', $referer);
+                    wp_safe_redirect($referer);
+                    exit;
+                }
+                unlink($zipFileName);
+                exit;
         }
-        $this->cleanUp($contentDir, $zipFileName);
+
+        $this->cleanUp($contentDir);
     }
 
-    private function cleanUp(string $contentDir, string $zipFileName) : void
+    private function cleanUp(string $contentDir) : void
     {
         $contenDirContent = glob($contentDir . '*');
         if ($contenDirContent) {
             array_map('unlink', $contenDirContent);
         }
         rmdir($contentDir);
-        unlink($zipFileName);
     }
 
     /**

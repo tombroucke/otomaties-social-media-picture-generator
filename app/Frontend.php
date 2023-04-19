@@ -22,21 +22,34 @@ class Frontend
     {
     }
 
-    /**
-     * Register the stylesheets for the public-facing side of the site.
-     *
-     */
-    public function enqueueStyles() : void
+    public function showNotices($content)
     {
-        wp_enqueue_style($this->pluginName, Assets::find('css/main.css'), [], null);
-    }
-
-    /**
-     * Register the JavaScript for the public-facing side of the site.
-     *
-     */
-    public function enqueueScripts() : void
-    {
-        wp_enqueue_script($this->pluginName, Assets::find('js/main.js'), [], null, true);
+        if (filter_input(INPUT_GET, 'smp_error')) {
+            $errorMessage = null;
+            switch (filter_input(INPUT_GET, 'smp_error')) {
+                case 'nonce':
+                    $errorMessage = __('We suspect your are a bot. Please contact us.', 'otomaties-smp');
+                    break;
+                case 'no_image':
+                case 'invalid_image':
+                    $errorMessage = __('No valid image was selected. Please select an image.', 'otomaties-smp');
+                    break;
+                case 'invalid_watermark':
+                    $errorMessage = __('No valid watermark was selected. Please contact us.', 'otomaties-smp');
+                    break;
+                case 'invalid_generated_image':
+                case 'no_files':
+                    $errorMessage = __('Something went wrong. Please contact us.', 'otomaties-smp');
+                    break;
+            }
+            if ($errorMessage) {
+                $errorMessage = sprintf(
+                    apply_filters('otomaties_smp_error_wrappper', '<div class="alert alert-danger">%s</div>'),
+                    $errorMessage
+                );
+                $content = $errorMessage . $content;
+            }
+        }
+        return $content;
     }
 }
