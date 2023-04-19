@@ -203,7 +203,7 @@ class Admin
             case 0:
                 $referer = add_query_arg('smp_error', 'no_files', $referer);
                 wp_safe_redirect($referer);
-                exit;
+                break;
             case 1:
                 $file = $files[0];
                 $fileInfo = pathinfo($file);
@@ -221,7 +221,7 @@ class Admin
                 header('Pragma: public');
                 header('Content-Length: ' . $fileSize);
                 readfile($file);
-                exit;
+                break;
             default:
                 $zipFileName = $this->zipEm($files);
                 if (!$zipFileName) {
@@ -230,10 +230,11 @@ class Admin
                     exit;
                 }
                 unlink($zipFileName);
-                exit;
+                break;
         }
 
         $this->cleanUp($contentDir);
+        exit;
     }
 
     private function cleanUp(string $contentDir) : void
