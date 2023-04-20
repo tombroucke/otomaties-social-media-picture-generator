@@ -82,6 +82,7 @@ class Plugin
     {
         $admin = new Admin();
         $this->loader->addAction('admin_post_generate-social-media-pictures', $admin, 'generateSocialMediaPictures');
+        $this->loader->addAction('admin_post_nopriv_generate-social-media-pictures', $admin, 'generateSocialMediaPictures');
     }
 
     /**
