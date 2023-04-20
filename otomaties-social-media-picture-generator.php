@@ -5,7 +5,7 @@ namespace Otomaties\SocialMediaPictureGenerator;
 /**
  * Plugin Name:       Otomaties Social Media Picture Generator
  * Description:       Allow visitors to generate a social media picture with a custom overlay
- * Version:           1.0.5
+ * Version:           1.0.6
  * Author:            Tom Broucke
  * Author URI:        https://tombroucke.be/
  * License:           GPL-2.0+
