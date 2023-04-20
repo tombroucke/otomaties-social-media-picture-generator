@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Otomaties Social Media Picture Generator\n"
-"POT-Creation-Date: 2023-04-14 21:39+0200\n"
-"PO-Revision-Date: 2023-04-14 21:40+0200\n"
+"POT-Creation-Date: 2023-04-20 07:45+0200\n"
+"PO-Revision-Date: 2023-04-20 07:46+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -15,9 +15,29 @@ msgstr ""
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: otomaties-social-media-picture-generator.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: app/Frontend.php:31
+msgid "We suspect your are a bot. Please contact us."
+msgstr "We vermoeden dat u een bot bent. Neem contact met ons op."
+
+#: app/Frontend.php:35
+msgid "No valid image was selected. Please select an image."
+msgstr ""
+"Er is geen geldige afbeelding geselecteerd. Gelieve een afbeelding te "
+"selecteren."
+
+#: app/Frontend.php:38
+msgid "No valid watermark was selected. Please contact us."
+msgstr "Er is geen geldig watermerk geselecteerd. Neem contact met ons op."
+
+#: app/Frontend.php:42
+msgid "Something went wrong. Please contact us."
+msgstr "Er is iets misgegaan. Neem contact met ons op."
 
 #: app/OptionsPage.php:22 app/OptionsPage.php:23
 msgid "Social Media Picture"
@@ -32,8 +52,11 @@ msgid "Archive filename"
 msgstr "Bestandsnaam van archief"
 
 #: app/OptionsPage.php:44
-msgid "Filename of the archive. Without the file extension. Defaults to 'images'"
-msgstr "Bestandsnaam van het archief. Zonder de bestandsextensie. Staat standaard op ‘afbeeldingen’"
+msgid ""
+"Filename of the archive. Without the file extension. Defaults to 'images'"
+msgstr ""
+"Bestandsnaam van het archief. Zonder de bestandsextensie. Staat standaard op "
+"‘afbeeldingen’"
 
 #: app/OptionsPage.php:45
 msgid "images"
@@ -60,10 +83,18 @@ msgid "Name of the image size"
 msgstr "Naam van het beeldformaat"
 
 #: app/OptionsPage.php:59
+msgid "Description"
+msgstr "Beschrijving"
+
+#: app/OptionsPage.php:60
+msgid "Description of the image size"
+msgstr "Naam van het beeldformaat"
+
+#: app/OptionsPage.php:63
 msgid "Overlay"
 msgstr "Overlay"
 
-#: app/OptionsPage.php:60
+#: app/OptionsPage.php:64
 msgid "Overlay image"
 msgstr "Overlappende afbeelding"
 
@@ -71,7 +102,7 @@ msgstr "Overlappende afbeelding"
 msgid "We are preparing the generator. Check back soon."
 msgstr "We bereiden de generator voor. Kom snel terug."
 
-#: views/form.php:26
+#: views/form.php:32
 msgid "Generate"
 msgstr "Genereer"
 
@@ -81,7 +112,8 @@ msgstr "Otomaties Social Media Afbeelding Generator"
 
 #. Description of the plugin/theme
 msgid "Allow visitors to generate a social media picture with a custom overlay"
-msgstr "Laat bezoekers een social media foto genereren met een aangepaste overlay"
+msgstr ""
+"Laat bezoekers een social media foto genereren met een aangepaste overlay"
 
 #. Author of the plugin/theme
 msgid "Tom Broucke"

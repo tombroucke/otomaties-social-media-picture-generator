@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Otomaties Social Media Picture Generator\n"
-"POT-Creation-Date: 2023-04-14 21:39+0200\n"
+"POT-Creation-Date: 2023-04-20 07:45+0200\n"
 "PO-Revision-Date: 2023-04-14 21:38+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -20,6 +20,22 @@ msgstr ""
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: app/Frontend.php:31
+msgid "We suspect your are a bot. Please contact us."
+msgstr ""
+
+#: app/Frontend.php:35
+msgid "No valid image was selected. Please select an image."
+msgstr ""
+
+#: app/Frontend.php:38
+msgid "No valid watermark was selected. Please contact us."
+msgstr ""
+
+#: app/Frontend.php:42
+msgid "Something went wrong. Please contact us."
+msgstr ""
 
 #: app/OptionsPage.php:22 app/OptionsPage.php:23
 msgid "Social Media Picture"
@@ -63,10 +79,18 @@ msgid "Name of the image size"
 msgstr ""
 
 #: app/OptionsPage.php:59
-msgid "Overlay"
+msgid "Description"
 msgstr ""
 
 #: app/OptionsPage.php:60
+msgid "Description of the image size"
+msgstr ""
+
+#: app/OptionsPage.php:63
+msgid "Overlay"
+msgstr ""
+
+#: app/OptionsPage.php:64
 msgid "Overlay image"
 msgstr ""
 
@@ -74,7 +98,7 @@ msgstr ""
 msgid "We are preparing the generator. Check back soon."
 msgstr ""
 
-#: views/form.php:26
+#: views/form.php:32
 msgid "Generate"
 msgstr ""
 
