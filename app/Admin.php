@@ -46,157 +46,161 @@ class Admin
 
         $files = [];
         foreach ($uploadedFiles as $sizeName => $file) {
-            $imageInfo = getimagesize($file['tmp_name']);
-
-            if (!$imageInfo) {
-                $referer = add_query_arg('smp_error', 'invalid_image', $referer);
-                wp_safe_redirect($referer);
-                exit;
-            }
-
-            $imagesize = $this->getImagesize($sizeName);
-            $watermarkPath = wp_get_original_image_path($imagesize['overlay']['ID']);
-
-            if ($watermarkPath === false) {
-                $referer = add_query_arg('smp_error', 'invalid_watermark', $referer);
-                wp_safe_redirect($referer);
-                exit;
-            }
-
-            $watermark = imagecreatefrompng($watermarkPath);
-            $watermarkInfo = getimagesize($watermarkPath);
-
-            if ($watermark === false || $watermarkInfo === false) {
-                $referer = add_query_arg('smp_error', 'invalid_watermark', $referer);
-                wp_safe_redirect($referer);
-                exit;
-            }
-         
-
-            // Create a new image resource based on the uploaded file type
-            switch ($imageInfo[2]) {
-                case IMAGETYPE_JPEG:
-                    $image = imagecreatefromjpeg($file['tmp_name']);
-                    break;
-                case IMAGETYPE_PNG:
-                    $image = imagecreatefrompng($file['tmp_name']);
-                    break;
-                case IMAGETYPE_GIF:
-                    $image = imagecreatefromgif($file['tmp_name']);
-                    break;
-                default:
-                    die('Invalid image type');
-            }
-
-            if ($image === false) {
-                $referer = add_query_arg('smp_error', 'invalid_generated_image', $referer);
-                wp_safe_redirect($referer);
-                exit;
-            }
-
-            // Get the image width and height
-            $frameWidth = $watermarkInfo[0];
-            $frameHeight = $watermarkInfo[1];
-            
-            $imageWidth = imagesx($image);
-            $imageHeight = imagesy($image);
-
-            $newImage = imagecreatetruecolor($frameWidth, $frameHeight);
-
-            if (!$newImage) {
-                throw new \Exception('Cannot initialize new GD image stream');
-            }
-            $backgroundColor = imagecolorallocate($newImage, 255, 255, 255);
-            if ($backgroundColor === false) {
-                $backgroundColor = 16777215;
-            }
-            imagefill($newImage, 0, 0, $backgroundColor);
-
-            $frameAspectRatio = $frameWidth / $frameHeight;
-            $imageAspectRatio = $imageWidth / $imageHeight;
-
-            $newImageWidth = $frameWidth;
-            $newImageHeight = $frameHeight;
-            $offsetX = 0;
-            $offsetY = 0;
-
-            if ($imageAspectRatio == 1 && $frameAspectRatio == 1) { // img & frame are square
-                // do nothing
-            } elseif (( $imageAspectRatio > 1 && ($frameAspectRatio < 1 || $frameAspectRatio > 1) ) // phpcs:ignore Generic.Files.LineLength.TooLong -- img landscape & frame landscape or portrait phpcs:ignore
-                || ( $imageAspectRatio >= 1 && $frameAspectRatio == 1 ) // img landscape & frame square
-                || ( $imageAspectRatio == 1 && $frameAspectRatio < 1 ) // img square & frame portrait
-            ) {
-                $newImageHeight = $frameHeight;
-                $newImageWidth = $imageWidth * ($newImageHeight / $imageHeight);
-
-                if ($newImageWidth < $frameWidth) {
-                    $newImageWidth = $frameWidth;
-                    $newImageHeight = $imageHeight * ($newImageWidth / $imageWidth);
+            try {
+                $imageInfo = getimagesize($file['tmp_name']);
+    
+                if (!$imageInfo) {
+                    $referer = add_query_arg('smp_error', 'invalid_image', $referer);
+                    wp_safe_redirect($referer);
+                    exit;
                 }
-
-                $offsetX = ($frameWidth - $newImageWidth) / 2;
-                $offsetY = 0;
-            } elseif (( $imageAspectRatio < 1 && ($frameAspectRatio < 1 || $frameAspectRatio > 1) ) // phpcs:ignore Generic.Files.LineLength.TooLong -- img portrait & frame landscape or portrait
-                || ( $imageAspectRatio <= 1 && $frameAspectRatio == 1 ) // img portrait & frame square
-                || ( $imageAspectRatio == 1 && $frameAspectRatio > 1 )  // img square & frame landscape
-            ) {
+    
+                $imagesize = $this->getImagesize($sizeName);
+                $watermarkPath = wp_get_original_image_path($imagesize['overlay']['ID']);
+    
+                if ($watermarkPath === false) {
+                    $referer = add_query_arg('smp_error', 'invalid_watermark', $referer);
+                    wp_safe_redirect($referer);
+                    exit;
+                }
+    
+                $watermark = imagecreatefrompng($watermarkPath);
+                $watermarkInfo = getimagesize($watermarkPath);
+    
+                if ($watermark === false || $watermarkInfo === false) {
+                    $referer = add_query_arg('smp_error', 'invalid_watermark', $referer);
+                    wp_safe_redirect($referer);
+                    exit;
+                }
+             
+    
+                // Create a new image resource based on the uploaded file type
+                switch ($imageInfo[2]) {
+                    case IMAGETYPE_JPEG:
+                        $image = imagecreatefromjpeg($file['tmp_name']);
+                        break;
+                    case IMAGETYPE_PNG:
+                        $image = imagecreatefrompng($file['tmp_name']);
+                        break;
+                    case IMAGETYPE_GIF:
+                        $image = imagecreatefromgif($file['tmp_name']);
+                        break;
+                    default:
+                        die('Invalid image type');
+                }
+    
+                if ($image === false) {
+                    $referer = add_query_arg('smp_error', 'invalid_generated_image', $referer);
+                    wp_safe_redirect($referer);
+                    exit;
+                }
+    
+                // Get the image width and height
+                $frameWidth = $watermarkInfo[0];
+                $frameHeight = $watermarkInfo[1];
+                
+                $imageWidth = imagesx($image);
+                $imageHeight = imagesy($image);
+    
+                $newImage = imagecreatetruecolor($frameWidth, $frameHeight);
+    
+                if (!$newImage) {
+                    throw new \Exception('Cannot initialize new GD image stream');
+                }
+                $backgroundColor = imagecolorallocate($newImage, 255, 255, 255);
+                if ($backgroundColor === false) {
+                    $backgroundColor = 16777215;
+                }
+                imagefill($newImage, 0, 0, $backgroundColor);
+                
+                $frameAspectRatio = $frameWidth / $frameHeight;
+                $imageAspectRatio = $imageWidth / $imageHeight;
+    
                 $newImageWidth = $frameWidth;
-                $newImageHeight = $imageHeight * ($newImageWidth / $imageWidth);
-
-                if ($newImageHeight < $frameHeight) {
+                $newImageHeight = $frameHeight;
+                $offsetX = 0;
+                $offsetY = 0;
+    
+                if ($imageAspectRatio == 1 && $frameAspectRatio == 1) { // img & frame are square
+                    // do nothing
+                } elseif (( $imageAspectRatio > 1 && ($frameAspectRatio < 1 || $frameAspectRatio > 1) ) // phpcs:ignore Generic.Files.LineLength.TooLong -- img landscape & frame landscape or portrait phpcs:ignore
+                    || ( $imageAspectRatio >= 1 && $frameAspectRatio == 1 ) // img landscape & frame square
+                    || ( $imageAspectRatio == 1 && $frameAspectRatio < 1 ) // img square & frame portrait
+                ) {
                     $newImageHeight = $frameHeight;
                     $newImageWidth = $imageWidth * ($newImageHeight / $imageHeight);
+    
+                    if ($newImageWidth < $frameWidth) {
+                        $newImageWidth = $frameWidth;
+                        $newImageHeight = $imageHeight * ($newImageWidth / $imageWidth);
+                    }
+    
+                    $offsetX = ($frameWidth - $newImageWidth) / 2;
+                    $offsetY = 0;
+                } elseif (( $imageAspectRatio < 1 && ($frameAspectRatio < 1 || $frameAspectRatio > 1) ) // phpcs:ignore Generic.Files.LineLength.TooLong -- img portrait & frame landscape or portrait
+                    || ( $imageAspectRatio <= 1 && $frameAspectRatio == 1 ) // img portrait & frame square
+                    || ( $imageAspectRatio == 1 && $frameAspectRatio > 1 )  // img square & frame landscape
+                ) {
+                    $newImageWidth = $frameWidth;
+                    $newImageHeight = $imageHeight * ($newImageWidth / $imageWidth);
+    
+                    if ($newImageHeight < $frameHeight) {
+                        $newImageHeight = $frameHeight;
+                        $newImageWidth = $imageWidth * ($newImageHeight / $imageHeight);
+                    }
+    
+                    $offsetX = 0;
+                    $offsetY = ($frameHeight - $newImageHeight) / 2;
                 }
-
-                $offsetX = 0;
-                $offsetY = ($frameHeight - $newImageHeight) / 2;
+    
+                imagecopyresampled(
+                    $newImage,
+                    $image,
+                    $offsetX,
+                    $offsetY,
+                    0,
+                    0,
+                    $newImageWidth,
+                    $newImageHeight,
+                    $imageWidth,
+                    $imageHeight
+                );
+                imagealphablending($newImage, true);
+                imagesavealpha($newImage, true);
+                imagecopy($newImage, $watermark, 0, 0, 0, 0, $frameWidth, $frameHeight);
+                $mergedFilename = $contentDir . $sizeName . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+    
+                if (!file_exists($contentDir)) {
+                    mkdir($contentDir, 0755, true);
+                }
+    
+                switch ($imageInfo[2]) {
+                    case IMAGETYPE_JPEG:
+                        imagejpeg($newImage, $mergedFilename, 90);
+                        break;
+                    case IMAGETYPE_PNG:
+                        imagepng($newImage, $mergedFilename, 9);
+                        break;
+                    case IMAGETYPE_GIF:
+                        imagegif($newImage, $mergedFilename);
+                        break;
+                }
+                if ($image !== false) {
+                    imagedestroy($image);
+                }
+    
+                if ($newImage !== false) {
+                    imagedestroy($newImage);
+                }
+    
+                if ($watermark !== false) {
+                    imagedestroy($watermark);
+                }
+    
+                $files[] = $mergedFilename;
+            } catch (\Throwable $th) {
+                continue;
             }
-
-            imagecopyresampled(
-                $newImage,
-                $image,
-                $offsetX,
-                $offsetY,
-                0,
-                0,
-                $newImageWidth,
-                $newImageHeight,
-                $imageWidth,
-                $imageHeight
-            );
-            imagealphablending($newImage, true);
-            imagesavealpha($newImage, true);
-            imagecopy($newImage, $watermark, 0, 0, 0, 0, $frameWidth, $frameHeight);
-            $mergedFilename = $contentDir . $sizeName . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-
-            if (!file_exists($contentDir)) {
-                mkdir($contentDir, 0755, true);
-            }
-
-            switch ($imageInfo[2]) {
-                case IMAGETYPE_JPEG:
-                    imagejpeg($newImage, $mergedFilename, 90);
-                    break;
-                case IMAGETYPE_PNG:
-                    imagepng($newImage, $mergedFilename, 9);
-                    break;
-                case IMAGETYPE_GIF:
-                    imagegif($newImage, $mergedFilename);
-                    break;
-            }
-            if ($image !== false) {
-                imagedestroy($image);
-            }
-
-            if ($newImage !== false) {
-                imagedestroy($newImage);
-            }
-
-            if ($watermark !== false) {
-                imagedestroy($watermark);
-            }
-
-            $files[] = $mergedFilename;
         }
 
         switch (count($files)) {
@@ -239,11 +243,13 @@ class Admin
 
     private function cleanUp(string $contentDir) : void
     {
-        $contenDirContent = glob($contentDir . '*');
-        if ($contenDirContent) {
-            array_map('unlink', $contenDirContent);
+        if (file_exists($contentDir)) {
+            $contenDirContent = glob($contentDir . '*');
+            if ($contenDirContent) {
+                array_map('unlink', $contenDirContent);
+            }
+            rmdir($contentDir);
         }
-        rmdir($contentDir);
     }
 
     /**
